@@ -28,7 +28,7 @@ class params:
     n_vocab = 5000    #8214
     seed = 42
     quantile = 10
-    subsample = .25
+    subsample = .10
     batch_size = 8
     epochs = 12
     learning_rate = 0.00005
