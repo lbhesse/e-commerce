@@ -7,7 +7,6 @@ from dotenv import find_dotenv, load_dotenv
 import numpy as np
 
 from keras.preprocessing.image import ImageDataGenerator
-from keras import optimizers
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, CSVLogger
 import tensorflow as tf
 
@@ -54,7 +53,7 @@ class TrainValTensorBoard(TensorBoard):
         logs = {k: v for k, v in logs.items() if not k.startswith('val_')}
         super(TrainValTensorBoard, self).on_epoch_end(epoch, logs)
 
-def make_labels(data):
+def make_labels(data, classmode):
     data['category'] = data['category'].astype('category').cat.codes
     data['product_category'] = data['product_category'].astype('category').cat.codes
     data['product_type'] = data['product_type'].astype('category').cat.codes
@@ -62,43 +61,35 @@ def make_labels(data):
     n_classes = np.max(np.unique(data['category'].tolist()))+1
     n_classes1 = np.max(np.unique(data['product_category'].tolist()))+1
     n_classes2 = np.max(np.unique(data['product_type'].tolist()))+1
-    n_classes3 = np.max(np.unique(data['product_details'].tolist()))+1 
-    print(n_classes, n_classes1, n_classes2, n_classes3)
-    print(1/n_classes, 1/n_classes1, 1/n_classes2, 1/n_classes3)
-    return (n_classes, n_classes1, n_classes2, n_classes3)
-        
-def train(modelname,
-          batch_size,
-          epochs,
-          learning_rate,
-          augment,
-          image_width,
-          image_heigth):
-    input_shape = (image_width, image_heigth, 3)
+    n_classes3 = np.max(np.unique(data['product_details'].tolist()))+1
 
+    if(classmode == 'multiclass'):
+        return n_classes
+    else:
+        return [n_classes1, n_classes2, n_classes3]
+
+def train(classmode, modelmode, batch_size, epochs, learning_rate):
     train = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.train_df))
-    n_classes, n_classes1, n_classes2, n_classes3 = make_labels(train)
+    nclasses = make_labels(train, classmode)
 
-    
     valid = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.valid_df))
-    make_labels(valid)
+    make_labels(valid, classmode)
 
-    BS = 8
-    seq = dg.DataSequence(train, ut.dirs.train_dir,  batch_size=BS)
-    vaseq = dg.DataSequence(valid, ut.dirs.validation_dir,  batch_size=BS)
+    traindata = dg.DataSequence(train,
+                                ut.dirs.train_dir,
+                                batch_size=batch_size,
+                                classmode=classmode,
+                                modelmode=modelmode)
+    validdata = dg.DataSequence(valid,
+                                ut.dirs.validation_dir,
+                                batch_size=batch_size,
+                                classmode=classmode,
+                                modelmode=modelmode)
 
-    mod = md.multiclass_models(input_shape, n_classes1, n_classes2, n_classes3)
-
-    model = mod.vgg16_NLP()
-    model.compile(
-                  optimizer=optimizers.Adam(lr=0.001),
-                  loss=['mse', 'categorical_crossentropy', 'categorical_crossentropy'],
-                  loss_weights=[1,1,2],
-                  metrics=["accuracy"])
-
+    model = md.custom(classmode, modelmode, nclasses).make_compiled_model(learning_rate)
     model.summary()
 
-    save_model_to = os.path.join(ut.dirs.model_dir, modelname + '.h5')
+    save_model_to = os.path.join(ut.dirs.model_dir, classmode + '_' + modelmode + '.h5')
 
     Checkpoint = ModelCheckpoint(save_model_to,
                                  monitor='val_loss',
@@ -113,54 +104,46 @@ def train(modelname,
                               verbose=0,
                               mode='auto',
                               baseline=None)
-    model.fit_generator(generator=seq,
-                        steps_per_epoch=len(train)//BS,
-                        validation_data=vaseq,
-                        validation_steps=len(valid)//BS,
-                        epochs=50,
-                        callbacks=[
-                                    TrainValTensorBoard(write_graph=False),
-                                    Checkpoint#,
-                                    #Earlystop
-                                    ],
-                        verbose=1,
+    model.fit_generator(generator=traindata,
+                        steps_per_epoch=len(train)//batch_size,
+                        validation_data=validdata,
+                        validation_steps=len(valid)//batch_size,
+                        epochs=epochs,
+                        callbacks=[TrainValTensorBoard(write_graph=False),
+                                   Checkpoint],
+                        #verbose=1,
                         use_multiprocessing=False,
                         workers=1)
 
 
-
-
 @click.command()
-@click.option('--modelname', type=str, default='vgg16',
-                    help='choose a model:\n\
-                            vgg16:  pretrained vgg16\n\
-                            cnn:    simple CNN\n\
-                            (default: vgg16)')
+@click.option('--classmode', type=str, default=ut.params.classmode,
+                    help='choose a classmode:\n\
+                            multilabel, multiclass\n\
+                            (default: multilabel)')
+@click.option('--modelmode', type=str, default=ut.params.modelmode,
+                    help='choose a modelmode:\n\
+                            image, text, combined\n\
+                            (default: combined)')
 @click.option('--ep', type=float, default=ut.params.epochs,
                     help='number of epochs (default: {})'.
                     format(ut.params.epochs))
 @click.option('--lr', type=float, default=ut.params.learning_rate,
                     help='learning rate (default: {})'.
                     format(ut.params.learning_rate))
-@click.option('--augment', type=int, default=1,
-                    help='data augmentation\n\
-                    0: False, 1: True (default: 1)')
 @click.option('--bs', type=int, default=ut.params.batch_size,
                     help='batch size (default: {})'.
                     format(ut.params.batch_size))
-@click.option('--width', type=int, default=ut.params.image_width,
-                    help='width of the sample images (default: {})'.
-                    format(ut.params.image_width))
-@click.option('--heigth', type=int, default=ut.params.image_heigth,
-                    help='heigth of the sample images (default: {})'.
-                    format(ut.params.image_heigth))
-def main(modelname, bs, ep, lr, augment, width, heigth):
+def main(classmode, modelmode, bs, ep, lr):
+    print('************* classmode', len(classmode))
+    if(len(classmode)==0):
+        classmode = ut.params.classmode
+        print('No classmode chosen.  Set to default:', classmode)
+    if(len(modelmode)==0):
+        modelmode = ut.params.modelmode
+        print('No modelmode chosen.  Set to defualt:', modelmode)
 
-    augmentation = True
-    if(augment == 0):
-        augmentation = False
-
-    train(modelname, bs, ep, lr, augmentation, width, heigth)
+    train(classmode, modelmode, bs, ep, lr)
 
 
 if __name__ == '__main__':
