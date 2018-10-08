@@ -83,7 +83,7 @@ def train(modelname,
 
     model = mod.vgg16_NLP()
     model.compile(
-                  optimizer="adam",
+                  optimizer=optimizers.Adam(lr=0.02),
                   loss="mse",
                   metrics=["accuracy"])
 

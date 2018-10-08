@@ -59,15 +59,16 @@ class multiclass_models:
 
     def vgg16_NLP(self):
         input_tensor = Input(shape=self.input_shape)
-        vgg_model = applications.VGG16(weights='imagenet',
+        vgg_model = applications.MobileNet(weights='imagenet',
                                        include_top=False,
                                        input_tensor=input_tensor)
 
         # Creating dictionary that maps layer names to the layers
         layer_dict = dict([(layer.name, layer) for layer in vgg_model.layers])
-
+        for layer in vgg_model.layers:
+            print(layer.name)
         # Getting output tensor of the last VGG layer that we want to include
-        x = layer_dict['block5_conv3'].output
+        x = layer_dict['conv_pw_13_bn'].output
         print(x.shape)
 
         # Stacking a new simple convolutional network on top of it
@@ -87,7 +88,7 @@ class multiclass_models:
         merged = concatenate([vgg_model_drop, NLP_flatten])
 
         # And let's train a logistic regression over 1000 words on top:
-        output = Dense(self.n_classes, activation='linear')(merged)
+        output = Dense(self.n_classes, activation='softmax')(merged)
         # This is our final model:
         custom_model = Model(inputs=[vgg_model.input, NLP_input],
                           outputs=[output])

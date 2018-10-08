@@ -7,8 +7,7 @@ from keras.utils import Sequence
 
 import pandas as pd
 import numpy as np
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img, img_to_array, ImageDataGenerator
 from keras.utils import to_categorical
 
 import math
@@ -18,8 +17,19 @@ from ast import literal_eval
 
 datapath = './im/'
 
+datagen = ImageDataGenerator(
+    featurewise_center=True,
+    featurewise_std_normalization=True,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    horizontal_flip=True)
+
 def load_image(im):
     return img_to_array(load_img(im, grayscale=False, target_size=(64, 64))) / 255.
+
+
+
 
 class DataSequence(Sequence):
     """
