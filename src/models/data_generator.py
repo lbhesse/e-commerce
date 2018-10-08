@@ -83,4 +83,4 @@ class DataSequence(Sequence):
         batch_y2 = self.get_batch_labels2(idx)
         batch_y3 = self.get_batch_labels3(idx)
         #return batch_x,
-        return [batch_t], [batch_y1, batch_y2, batch_y3]
+        return [batch_x, batch_t], [batch_y1, batch_y2, batch_y3]

@@ -90,7 +90,7 @@ def train(modelname,
 
 
 
-    model = mod.NLP()
+    model = mod.vgg16_NLP()
     model.compile(
                   optimizer=optimizers.Adam(lr=0.03),
                   loss="mse",
@@ -117,7 +117,7 @@ def train(modelname,
                         steps_per_epoch=len(train)//50,
                         validation_data=vaseq,
                         validation_steps=len(valid)//50,
-                        epochs=5,
+                        epochs=50,
                         callbacks=[
                                     TrainValTensorBoard(write_graph=False),
                                     Checkpoint#,
