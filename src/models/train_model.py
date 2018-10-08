@@ -54,7 +54,19 @@ class TrainValTensorBoard(TensorBoard):
         logs = {k: v for k, v in logs.items() if not k.startswith('val_')}
         super(TrainValTensorBoard, self).on_epoch_end(epoch, logs)
 
-
+def make_labels(data):
+    data['category'] = data['category'].astype('category').cat.codes
+    data['product_category'] = data['product_category'].astype('category').cat.codes
+    data['product_type'] = data['product_type'].astype('category').cat.codes
+    data['product_details'] = data['product_details'].astype('category').cat.codes
+    n_classes = np.max(np.unique(data['category'].tolist()))+1
+    n_classes1 = np.max(np.unique(data['product_category'].tolist()))+1
+    n_classes2 = np.max(np.unique(data['product_type'].tolist()))+1
+    n_classes3 = np.max(np.unique(data['product_details'].tolist()))+1 
+    print(n_classes, n_classes1, n_classes2, n_classes3)
+    print(1/n_classes, 1/n_classes1, 1/n_classes2, 1/n_classes3)
+    return (n_classes, n_classes1, n_classes2, n_classes3)
+        
 def train(modelname,
           batch_size,
           epochs,
@@ -64,37 +76,24 @@ def train(modelname,
           image_heigth):
     input_shape = (image_width, image_heigth, 3)
 
-
     train = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.train_df))
-    train['category'] = train['category'].astype('category').cat.codes
-    train['product_category'] = train['product_category'].astype('category').cat.codes
-    train['product_type'] = train['product_type'].astype('category').cat.codes
-    train['product_details'] = train['product_details'].astype('category').cat.codes
-    #pd.DataFrame({col: df[col].astype('category').cat.codes for col in df}, index=df.index)
+    n_classes, n_classes1, n_classes2, n_classes3 = make_labels(train)
+
+    
     valid = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.valid_df))
-    valid['category'] = valid['category'].astype('category').cat.codes
-    valid['product_category'] = valid['product_category'].astype('category').cat.codes
-    valid['product_type'] = valid['product_type'].astype('category').cat.codes
-    valid['product_details'] = valid['product_details'].astype('category').cat.codes
-    #pd.DataFrame({col: df[col].astype('category').cat.codes for col in df}, index=df.index)
+    make_labels(valid)
 
-    n_classes = np.max(np.unique(train['category'].tolist()))+1
-    n_classes1 = np.max(np.unique(train['product_category'].tolist()))+1
-    n_classes2 = np.max(np.unique(train['product_type'].tolist()))+1
-    n_classes3 = np.max(np.unique(train['product_details'].tolist()))+1
-
-
-    seq = dg.DataSequence(train, ut.dirs.train_dir,  batch_size=50)
-    vaseq = dg.DataSequence(valid, ut.dirs.validation_dir,  batch_size=50)
+    BS = 8
+    seq = dg.DataSequence(train, ut.dirs.train_dir,  batch_size=BS)
+    vaseq = dg.DataSequence(valid, ut.dirs.validation_dir,  batch_size=BS)
 
     mod = md.multiclass_models(input_shape, n_classes1, n_classes2, n_classes3)
 
-
-
     model = mod.vgg16_NLP()
     model.compile(
-                  optimizer=optimizers.Adam(lr=0.01),
-                  loss=['mse', 'categorical_crossentropy', 'categorical_crossentropy'],#"categorical_crossentropy",
+                  optimizer=optimizers.Adam(lr=0.001),
+                  loss=['mse', 'categorical_crossentropy', 'categorical_crossentropy'],
+                  loss_weights=[1,1,2],
                   metrics=["accuracy"])
 
     model.summary()
@@ -115,9 +114,9 @@ def train(modelname,
                               mode='auto',
                               baseline=None)
     model.fit_generator(generator=seq,
-                        steps_per_epoch=len(train)//50,
+                        steps_per_epoch=len(train)//BS,
                         validation_data=vaseq,
-                        validation_steps=len(valid)//50,
+                        validation_steps=len(valid)//BS,
                         epochs=50,
                         callbacks=[
                                     TrainValTensorBoard(write_graph=False),

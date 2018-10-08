@@ -24,11 +24,10 @@ class df_names:
     test_df = "201802_test_product_data.csv"
 
 class params:
-    n_classes = 0
     n_words = 9
     n_vocab = 5000
     seed = 42
-    quantile = .5
+    quantile = 100
     subsample = .1
     batch_size = 20
     epochs = 5

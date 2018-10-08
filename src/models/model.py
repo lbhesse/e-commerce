@@ -1,5 +1,5 @@
 from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Input, Dropout, Flatten, Dense, Embedding, concatenate
+from keras.layers import Input, Dropout, Flatten, Dense, Embedding, concatenate, multiply
 from keras import applications
 from keras import Model
 
@@ -90,20 +90,21 @@ class multiclass_models:
 
         # Stacking a new simple convolutional network on top of it
         vgg_model_flat = Flatten()(x)
-        vgg_model_dense = Dense(256, activation='relu')(vgg_model_flat)
+        vgg_model_dense = Dense(128, activation='relu')(vgg_model_flat)
         vgg_model_drop = Dropout(0.5)(vgg_model_dense)
         # Make sure that the pre-trained bottom layers are not trainable
         for layer in vgg_model.layers:
             layer.trainable = False
 
         NLP_input = Input(shape=(ut.params.n_words, ))
-        NLP_embedding = Embedding(ut.params.n_vocab, 50, input_length=ut.params.n_words)(NLP_input)
+        NLP_embedding = Embedding(ut.params.n_vocab, 128, input_length=ut.params.n_words)(NLP_input)
         NLP_flatten = Flatten()(NLP_embedding)
+        NLP_dense = Dense(128, activation='relu')(NLP_flatten)
 
 
         # Let's concatenate the question vector and the image vector:
-        merged = concatenate([vgg_model_drop, NLP_flatten])
-        merged = Dense(256, activation='relu')(merged)
+        merged = multiply([vgg_model_drop, NLP_dense])
+        merged = Dense(128, activation='relu')(merged)
         merged = Dropout(0.5)(merged)
         # And let's train a logistic regression over 1000 words on top:
         output1 = Dense(self.n_classes1, activation='sigmoid')(merged)
@@ -111,11 +112,11 @@ class multiclass_models:
         output3 = Dense(self.n_classes3, activation='sigmoid')(merged)
         if(self.n_classes1 > 1):
             custom_out1 = Dense(self.n_classes1,
-                               activation='linear')(merged)
+                               activation='softmax')(merged)
             custom_out2= Dense(self.n_classes2,
-                               activation='linear')(merged)
+                               activation='softmax')(merged)
             custom_out3 = Dense(self.n_classes3,
-                       activation='linear')(merged)
+                       activation='softmax')(merged)
         # This is our final model:
         custom_model = Model(inputs=[vgg_model.input, NLP_input],
                           outputs=[output1, output2, output3])

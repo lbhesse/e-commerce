@@ -132,14 +132,6 @@ class prepare_datasets:
             self.copy(names, original_dir, dirs)
 
 
-
-
-
-
-
-
-
-
 @click.command()
 @click.option('--split', type=float, default=0.2,
                     help='validation and test split (default: 0.2)')
@@ -153,11 +145,11 @@ class prepare_datasets:
                      help='delete training, validation and test data\n\
                       before creating new\n\
                       0: False, 1: True (default: 1)')
-@click.option('--quantile', default=.5,
+@click.option('--quantile', default=ut.params.quantile,
                     help='crop training (train, valid, test) \
                      data to show only the targets\n\
                      None: False, (float, int): True (default: 0.5)')
-@click.option('--subsample_size', default=.1,
+@click.option('--subsample_size', default=ut.params.subsample,
                     help='crop training (train, valid, test) \
                      data to show only the targets\n\
                      None: False, (float, int): True (default: 0.5)')
