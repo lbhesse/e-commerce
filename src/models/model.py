@@ -86,7 +86,10 @@ class multiclass_models:
 
         # Let's concatenate the question vector and the image vector:
         merged = concatenate([vgg_model_drop, NLP_flatten])
-
+        merged = Dense(256, activation='relu')(merged)
+        merged = Dropout(0.5)(merged)
+        merged = Dense(128, activation='relu')(merged)
+        merged = Dropout(0.5)(merged)
         # And let's train a logistic regression over 1000 words on top:
         output = Dense(self.n_classes, activation='softmax')(merged)
         # This is our final model:
