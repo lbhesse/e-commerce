@@ -28,7 +28,7 @@ def read_df(load_from):
     df = pd.read_csv(load_from, sep=';', header=0)
     if('Unnamed: 0' in df.columns):
         df.drop(['Unnamed: 0'], axis=1)
-    for col in ['reduced_title', 'tokenized', 'cat_category', 'cat_product_category', 'cat_product_type', 'cat_product_details']:
+    for col in ['reduced_title', 'tokenized']:#, 'cat_category', 'cat_product_category', 'cat_product_type', 'cat_product_details']:
         if(col in df.columns):
             df.loc[:, col] = df.loc[:, col].apply(lambda x: literal_eval(x))
     return df
@@ -149,7 +149,7 @@ class preparation:
             vocab_len = data[column].apply(pd.Series).stack().value_counts()
 
             print('************************   max_len:', max_len)
-            print('************************ vocab_len:', vocab_len)
+            print('************************ vocab_len:', vocab_len, ut.params.n_vocab)
 
 
             tokenize = Tokenizer(num_words=ut.params.n_vocab,
@@ -170,20 +170,12 @@ class preparation:
 
         return data
 
-    def make_categorical(self, data):
-        data['cat_category'] = data['category'].astype('category').cat.codes
-        data['cat_product_category'] = data['product_category'].astype('category').cat.codes
-        data['cat_product_type'] = data['product_type'].astype('category').cat.codes
-        data['cat_product_details'] = data['product_details'].astype('category').cat.codes
-        return data
-
     def make_clean(self, data):
         data = self.make_clean_title(data)
         data = self.make_clean_imagecontent(data)
         data = self.make_expanded_categories(data)
         data = self.make_keras_embeddings(data)
         data = self.make_clean_sku(data)
-        data = self.make_categorical(data)
         data = data.dropna().reset_index(drop=True)
         return data
 
@@ -255,6 +247,12 @@ class stat_selection:
         data = self.select_category_threshold(data)
         return data
 
+def make_categorical(data):
+    data['cat_category'] = data['category'].astype('category').cat.codes
+    data['cat_product_category'] = data['product_category'].astype('category').cat.codes
+    data['cat_product_type'] = data['product_type'].astype('category').cat.codes
+    data['cat_product_details'] = data['product_details'].astype('category').cat.codes
+    return data
 
 def working_df(clean_title=True, column='category', quantile=None, sample_size=None):
     df_clean_dir = os.path.join(ut.dirs.raw_dir, ut.df_names.cleaned_df)
@@ -273,6 +271,5 @@ def working_df(clean_title=True, column='category', quantile=None, sample_size=N
 
     df_return = stat_selection(column, quantile, sample_size).make_selection(df_cleaned)
 
-
     del df_cleaned
-    return df_return
+    return make_categorical(df_return)

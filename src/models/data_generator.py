@@ -33,10 +33,11 @@ class DataSequence(Sequence):
         self.modelmode = modelmode
 
         # Take labels and a list of image locations in memory
-        self.labels = to_categorical(np.array(self.df['category'].values.tolist()))
-        self.labels_pc = to_categorical(np.array(self.df['product_category'].values.tolist()))
-        self.labels_pt = to_categorical(np.array(self.df['product_type'].values.tolist()))
-        self.labels_pd = to_categorical(np.array(self.df['product_details'].values.tolist()))
+        #self.labels = to_categorical(np.array(self.df['category'].values.tolist()))
+        self.labels = to_categorical(np.array(self.df['cat_category'].values.tolist()))#to_categorical(np.array(self.df['category'].values.tolist()))
+        self.labels_pc = to_categorical(np.array(self.df['cat_product_category'].values.tolist()))
+        self.labels_pt = to_categorical(np.array(self.df['cat_product_type'].values.tolist()))
+        self.labels_pd = to_categorical(np.array(self.df['cat_product_details'].values.tolist()))
         self.im_list = self.df['imagename'].apply(lambda x: os.path.join(data_path, x)).tolist()
         self.text_list = self.df['tokenized_title'].apply(lambda x: literal_eval(x)).values.tolist()
 

@@ -25,13 +25,13 @@ class df_names:
 
 class params:
     n_words = 9
-    n_vocab = 4107    #8214
+    n_vocab = 5000    #8214
     seed = 42
     quantile = 10
     subsample = .25
     batch_size = 8
     epochs = 12
-    learning_rate = 0.0001
+    learning_rate = 0.00005
     image_width = 64
     image_heigth = 64
     classmode = 'multilabel'

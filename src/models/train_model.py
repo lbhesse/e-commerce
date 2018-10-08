@@ -54,14 +54,11 @@ class TrainValTensorBoard(TensorBoard):
         super(TrainValTensorBoard, self).on_epoch_end(epoch, logs)
 
 def make_labels(data, classmode):
-    data['category'] = data['category'].astype('category').cat.codes
-    data['product_category'] = data['product_category'].astype('category').cat.codes
-    data['product_type'] = data['product_type'].astype('category').cat.codes
-    data['product_details'] = data['product_details'].astype('category').cat.codes
-    n_classes = np.max(np.unique(data['category'].tolist()))+1
-    n_classes1 = np.max(np.unique(data['product_category'].tolist()))+1
-    n_classes2 = np.max(np.unique(data['product_type'].tolist()))+1
-    n_classes3 = np.max(np.unique(data['product_details'].tolist()))+1
+    #print(len(data['cat_product_category'].value_counts()))
+    n_classes = len(data['cat_category'].value_counts())
+    n_classes1 = len(data['cat_product_category'].value_counts())
+    n_classes2 = len(data['cat_product_type'].value_counts())
+    n_classes3 = len(data['cat_product_details'].value_counts())
 
     if(classmode == 'multiclass'):
         return n_classes
