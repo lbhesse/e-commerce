@@ -76,7 +76,7 @@ class multiclass_models:
 
     def vgg16_NLP(self):
         input_tensor = Input(shape=self.input_shape)
-        vgg_model = applications.MobileNet(weights='imagenet',
+        vgg_model = applications.VGG16(weights='imagenet',
                                        include_top=False,
                                        input_tensor=input_tensor)
 
@@ -85,7 +85,7 @@ class multiclass_models:
         for layer in vgg_model.layers:
             print(layer.name)
         # Getting output tensor of the last VGG layer that we want to include
-        x = layer_dict['conv_pw_13_bn'].output
+        x = layer_dict['block5_conv3'].output#conv_pw_13_bn'].output
         print(x.shape)
 
         # Stacking a new simple convolutional network on top of it

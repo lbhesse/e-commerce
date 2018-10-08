@@ -93,7 +93,7 @@ def train(modelname,
     model = mod.vgg16_NLP()
     model.compile(
                   optimizer=optimizers.Adam(lr=0.03),
-                  loss="mse",
+                  loss="categorical_crossentropy",
                   metrics=["accuracy"])
 
     model.summary()
