@@ -118,6 +118,11 @@ def train(modelname,
                         validation_data=vaseq,
                         validation_steps=len(valid)//50,
                         epochs=5,
+                        callbacks=[
+                                    TrainValTensorBoard(write_graph=False),
+                                    Checkpoint#,
+                                    #Earlystop
+                                    ],
                         verbose=1,
                         use_multiprocessing=False,
                         workers=1)
