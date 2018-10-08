@@ -83,6 +83,7 @@ def train(modelname,
     n_classes2 = np.max(np.unique(train['product_type'].tolist()))+1
     n_classes3 = np.max(np.unique(train['product_details'].tolist()))+1
 
+
     seq = dg.DataSequence(train, ut.dirs.train_dir,  batch_size=50)
     vaseq = dg.DataSequence(valid, ut.dirs.validation_dir,  batch_size=50)
 
@@ -92,8 +93,8 @@ def train(modelname,
 
     model = mod.vgg16_NLP()
     model.compile(
-                  optimizer=optimizers.Adam(lr=0.03),
-                  loss="categorical_crossentropy",
+                  optimizer=optimizers.Adam(lr=0.01),
+                  loss=['mse', 'categorical_crossentropy', 'categorical_crossentropy'],#"categorical_crossentropy",
                   metrics=["accuracy"])
 
     model.summary()

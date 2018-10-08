@@ -111,11 +111,11 @@ class multiclass_models:
         output3 = Dense(self.n_classes3, activation='sigmoid')(merged)
         if(self.n_classes1 > 1):
             custom_out1 = Dense(self.n_classes1,
-                               activation='softmax')(merged)
+                               activation='linear')(merged)
             custom_out2= Dense(self.n_classes2,
-                               activation='softmax')(merged)
+                               activation='linear')(merged)
             custom_out3 = Dense(self.n_classes3,
-                       activation='softmax')(merged)
+                       activation='linear')(merged)
         # This is our final model:
         custom_model = Model(inputs=[vgg_model.input, NLP_input],
                           outputs=[output1, output2, output3])
