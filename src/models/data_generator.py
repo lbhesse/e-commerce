@@ -41,7 +41,9 @@ class DataSequence(Sequence):
         self.mode = mode
 
         # Take labels and a list of image locations in memory
-        self.labels = to_categorical(np.array(self.df['category'].values.tolist()))
+        self.labels1 = to_categorical(np.array(self.df['product_category'].values.tolist()))
+        self.labels2 = to_categorical(np.array(self.df['product_type'].values.tolist()))
+        self.labels3 = to_categorical(np.array(self.df['product_details'].values.tolist()))
         self.im_list = self.df['imagename'].apply(lambda x: os.path.join(data_path, x)).tolist()
         self.text_list = self.df['tokenized_title'].apply(lambda x: literal_eval(x)).values.tolist()
 
@@ -54,9 +56,17 @@ class DataSequence(Sequence):
         if self.mode == 'train':
             self.indexes = random.sample(self.indexes, k=len(self.indexes))
 
-    def get_batch_labels(self, idx):
+    def get_batch_labels1(self, idx):
         # Fetch a batch of labels
-        return np.array(self.labels[idx * self.bsz: (idx + 1) * self.bsz])
+        return np.array(self.labels1[idx * self.bsz: (idx + 1) * self.bsz])
+
+    def get_batch_labels2(self, idx):
+        # Fetch a batch of labels
+        return np.array(self.labels2[idx * self.bsz: (idx + 1) * self.bsz])
+        
+    def get_batch_labels3(self, idx):
+        # Fetch a batch of labels
+        return np.array(self.labels3[idx * self.bsz: (idx + 1) * self.bsz])
 
     def get_batch_texts(self, idx):
         # Fetch a batch of labels
@@ -69,6 +79,8 @@ class DataSequence(Sequence):
     def __getitem__(self, idx):
         batch_x = self.get_batch_features(idx)
         batch_t = self.get_batch_texts(idx)
-        batch_y = self.get_batch_labels(idx)
+        batch_y1 = self.get_batch_labels1(idx)
+        batch_y2 = self.get_batch_labels2(idx)
+        batch_y3 = self.get_batch_labels3(idx)
         #return batch_x,
-        return [batch_x, batch_t], batch_y
+        return [batch_t], [batch_y1, batch_y2, batch_y3]

@@ -8,9 +8,11 @@ import src.utils.utils as ut
 
 # If you want to specify input tensor
 class multiclass_models:
-    def __init__(self, input_shape, n_classes):
+    def __init__(self, input_shape, n_classes1, n_classes2, n_classes3):
         self.input_shape = input_shape
-        self.n_classes = n_classes
+        self.n_classes1 = n_classes1
+        self.n_classes2 = n_classes2
+        self.n_classes3 = n_classes3
 
     def vgg16(self):
         input_tensor = Input(shape=self.input_shape)
@@ -29,14 +31,20 @@ class multiclass_models:
         custom_flat = Flatten()(x)
         custom_dense = Dense(256, activation='relu')(custom_flat)
         custom_drop = Dropout(0.5)(custom_dense)
-        custom_out = Dense(self.n_classes, activation='sigmoid')(custom_drop)
+        output1 = Dense(self.n_classes1, activation='sigmoid')(custom_drop)
+        output2 = Dense(self.n_classes2, activation='sigmoid')(custom_drop)
+        output3 = Dense(self.n_classes3, activation='sigmoid')(custom_drop)
         if(self.n_classes > 1):
-            custom_out = Dense(self.n_classes,
+            custom_out1 = Dense(self.n_classes1,
                                activation='softmax')(custom_drop)
+            custom_out2= Dense(self.n_classes2,
+                               activation='softmax')(custom_drop)
+            custom_out3 = Dense(self.n_classes3,
+                       activation='softmax')(custom_drop)
 
         # Creating new model.
         # Please note that this is NOT a Sequential() model.
-        custom_model = Model(input=vgg_model.input, output=custom_out)
+        custom_model = Model(input=vgg_model.input, output=[output1, output2, output3])
 
         # Make sure that the pre-trained bottom layers are not trainable
         for layer in vgg_model.layers:
@@ -46,14 +54,23 @@ class multiclass_models:
 
     def NLP(self):
         model_input  = Input(shape=(ut.params.n_words, ))
-        hidden_layer = Embedding(ut.params.n_vocab, 500, input_length=ut.params.n_words)(model_input)
+        hidden_layer = Embedding(ut.params.n_vocab, 128, input_length=ut.params.n_words)(model_input)
         hidden_layer = Flatten()(hidden_layer)
-        output_layer = Dense(self.n_classes, activation='linear')(hidden_layer)
+        #output_layer = Dense(self.n_classes, activation='linear')(hidden_layer)
 
-
+        output1 = Dense(self.n_classes1, activation='sigmoid')(hidden_layer)
+        output2 = Dense(self.n_classes2, activation='sigmoid')(hidden_layer)
+        output3 = Dense(self.n_classes3, activation='sigmoid')(hidden_layer)
+        if(self.n_classes1 > 1):
+            custom_out1 = Dense(self.n_classes1,
+                               activation='softmax')(hidden_layer)
+            custom_out2= Dense(self.n_classes2,
+                               activation='softmax')(hidden_layer)
+            custom_out3 = Dense(self.n_classes3,
+                       activation='softmax')(hidden_layer)
         # Creating new model.
         # Please note that this is NOT a Sequential() model.
-        custom_model = Model(input=model_input, output=output_layer)
+        custom_model = Model(input=model_input, output=[output1, output2, output3])
 
         return custom_model
 
@@ -79,7 +96,7 @@ class multiclass_models:
         for layer in vgg_model.layers:
             layer.trainable = False
 
-        NLP_input  = Input(shape=(ut.params.n_words, ))
+        NLP_input = Input(shape=(ut.params.n_words, ))
         NLP_embedding = Embedding(ut.params.n_vocab, 50, input_length=ut.params.n_words)(NLP_input)
         NLP_flatten = Flatten()(NLP_embedding)
 
@@ -88,12 +105,19 @@ class multiclass_models:
         merged = concatenate([vgg_model_drop, NLP_flatten])
         merged = Dense(256, activation='relu')(merged)
         merged = Dropout(0.5)(merged)
-        merged = Dense(128, activation='relu')(merged)
-        merged = Dropout(0.5)(merged)
         # And let's train a logistic regression over 1000 words on top:
-        output = Dense(self.n_classes, activation='softmax')(merged)
+        output1 = Dense(self.n_classes1, activation='sigmoid')(merged)
+        output2 = Dense(self.n_classes2, activation='sigmoid')(merged)
+        output3 = Dense(self.n_classes3, activation='sigmoid')(merged)
+        if(self.n_classes1 > 1):
+            custom_out1 = Dense(self.n_classes1,
+                               activation='softmax')(merged)
+            custom_out2= Dense(self.n_classes2,
+                               activation='softmax')(merged)
+            custom_out3 = Dense(self.n_classes3,
+                       activation='softmax')(merged)
         # This is our final model:
         custom_model = Model(inputs=[vgg_model.input, NLP_input],
-                          outputs=[output])
+                          outputs=[output1, output2, output3])
 
         return custom_model
