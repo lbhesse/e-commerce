@@ -116,40 +116,38 @@ A more detailed investigation of the statistics of the data set can be found in 
     Now, everything is ready to run the pretrained models.
 
 5.  Therefore, simply execute
-
       ```
       make model_predict
       ```
+    from the root directory of the project.  
 
-  from the root directory of the project.  
+    This will execute the default pre-trained classifier which is a combination of a deep-learning image classifier and a text classifier.  
+    The image classifier itself is a pre-trained vgg16 model, implemented in keras, along with a customized top to accomplish this particular classification task.  
 
-  This will execute the default pre-trained classifier which is a combination of a deep-learning image classifier and a text classifier.  
-  The image classifier itself is a pre-trained vgg16 model, implemented in keras, along with a customized top to accomplish this particular classification task.  
+    The default classification is multilabel.  
 
-  The default classification is multilabel.  
+    Again, in
 
-  Again, in
+          utils/utils.py
 
-        utils/utils.py
+    these default settings can be altered.  
 
-  these default settings can be altered.  
+    Furthermore, one can also alter two particular default settings by running
+    ```
+    make model_predict CLASSMODE==<classmode> MODENAME==<modename>
+    ```
+    where `<classmode>` is  
 
-  Furthermore, one can also alter two particular default settings by running
-  ```
-  make model_predict CLASSMODE==<classmode> MODENAME==<modename>
-  ```
-  where `<classmode>` is  
+          a. multilabel (**default**)
+          b. multiclass
 
-        a. multilabel (**default**)
-        b. multiclass
+    and `<modelmode>`
 
-  and `<modelmode>`
+          a. combined (**default**, run a combined image and text classifier simultaneously)
+          b. image (run only the image classifier)
+          c. text (run only the text classifier)
 
-        a. combined (**default**, run a combined image and text classifier simultaneously)
-        b. image (run only the image classifier)
-        c. text (run only the text classifier)
-
-  Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`
+    Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`
 
 
 
