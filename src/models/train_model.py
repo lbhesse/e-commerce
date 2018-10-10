@@ -1,76 +1,27 @@
 import os
-import sys
 import click
 import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
-import numpy as np
 
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, CSVLogger
-import tensorflow as tf
+from keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
 
-
-from ast import literal_eval
 
 import src.utils.utils as ut
+import src.utils.model_utils as mu
 import src.models.model as md
 import src.models.data_generator as dg
 
 import src.data.dataframe as dat
 
-class TrainValTensorBoard(TensorBoard):
-    def __init__(self, log_dir='./logs', **kwargs):
-        # Make the original `TensorBoard` log to a subdirectory 'training'
-        training_log_dir = os.path.join(log_dir, 'training')
-        super(TrainValTensorBoard, self).__init__(training_log_dir, **kwargs)
 
-        # Log the validation metrics to a separate subdirectory
-        self.val_log_dir = os.path.join(log_dir, 'validation')
-
-    def set_model(self, model):
-        # Setup writer for validation metrics
-        self.val_writer = tf.summary.FileWriter(self.val_log_dir)
-        super(TrainValTensorBoard, self).set_model(model)
-
-    def on_epoch_end(self, epoch, logs=None):
-        # Pop the validation logs and handle them separately with
-        # `self.val_writer`. Also rename the keys so that they can
-        # be plotted on the same figure with the training metrics
-        logs = logs or {}
-        val_logs = {k.replace('val_', ''): v for k,
-                    v in logs.items() if k.startswith('val_')}
-
-        for name, value in val_logs.items():
-            summary = tf.Summary()
-            summary_value = summary.value.add()
-            summary_value.simple_value = value.item()
-            summary_value.tag = name
-            self.val_writer.add_summary(summary, epoch)
-        self.val_writer.flush()
-
-        # Pass the remaining logs to `TensorBoard.on_epoch_end`
-        logs = {k: v for k, v in logs.items() if not k.startswith('val_')}
-        super(TrainValTensorBoard, self).on_epoch_end(epoch, logs)
-
-def make_labels(data, classmode):
-    #print(len(data['cat_product_category'].value_counts()))
-    n_classes = len(data['cat_category'].value_counts())
-    n_classes1 = len(data['cat_product_category'].value_counts())
-    n_classes2 = len(data['cat_product_type'].value_counts())
-    n_classes3 = len(data['cat_product_details'].value_counts())
-
-    if(classmode == 'multiclass'):
-        return n_classes
-    else:
-        return [n_classes1, n_classes2, n_classes3]
 
 def train(classmode, modelmode, batch_size, epochs, learning_rate):
     train = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.train_df))
-    nclasses = make_labels(train, classmode)
+    nclasses = mu.get_n_classes(train, classmode)
 
     valid = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.valid_df))
-    make_labels(valid, classmode)
+    mu.get_n_classes(valid, classmode)
 
     traindata = dg.DataSequence(train,
                                 ut.dirs.train_dir,
@@ -106,7 +57,7 @@ def train(classmode, modelmode, batch_size, epochs, learning_rate):
                         validation_data=validdata,
                         validation_steps=len(valid)//batch_size,
                         epochs=epochs,
-                        callbacks=[TrainValTensorBoard(write_graph=False),
+                        callbacks=[mu.TrainValTensorBoard(write_graph=False),
                                    Checkpoint],
                         #verbose=1,
                         use_multiprocessing=False,

@@ -22,6 +22,7 @@ class df_names:
     train_df = "201802_train_product_data.csv"
     valid_df = "201802_valid_product_data.csv"
     test_df = "201802_test_product_data.csv"
+    extracted_features = 'extracted_features.npz'
 
 class params:
     n_words = 9
@@ -35,7 +36,7 @@ class params:
     image_width = 64
     image_heigth = 64
     classmode = 'multilabel'
-    modelmode = 'text'
+    modelmode = 'combined'
 
 
 def main():

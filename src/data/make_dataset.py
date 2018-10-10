@@ -53,6 +53,21 @@ class prepare_datasets:
             if not os.path.exists(directory):
                 os.mkdir(directory)
 
+    def make_used_data_comprehensive(self, datalist):
+        dirlist = [ut.dirs.train_dir, ut.dirs.validation_dir, ut.dirs.test_dir]
+        df_comprehensive = pd.DataFrame()
+        subdata_len = 0
+        for subdata, subdata_dir in zip(datalist, dirlist):
+            subdata_len += len(subdata)
+            subdata['imagename'] = str(subdata_dir) + '/' + subdata['imagename']
+            df_comprehensive = df_comprehensive.append(subdata)
+
+        assert subdata_len == len(df_comprehensive)
+
+        dat.save_df(df_comprehensive, os.path.join(ut.dirs.processed_dir,
+                                                   ut.df_names.cleaned_df))
+        del df_comprehensive
+
     def make_split(self, data):
         if(data is not None and len(data) != 0):
             train_tmp, test = train_test_split(data,
@@ -72,6 +87,8 @@ class prepare_datasets:
                                     ut.df_names.valid_df))
             dat.save_df(test, os.path.join(ut.dirs.processed_dir,
                                   ut.df_names.test_df))
+
+            self.make_used_data_comprehensive(list([train, valid, test]))
             del data
             return (train.reset_index(drop=True),
                     valid.reset_index(drop=True),
