@@ -67,10 +67,10 @@ A more detailed investigation of the statistics of the data set can be found in 
 # Hands-on product classification
 
 1. Clone the repository
-```
-git clone git@github.com:L2Data/e-commerce.git
-cd e-commerce
-```
+    ```
+    git clone git@github.com:L2Data/e-commerce.git
+    cd e-commerce
+    ```
 2. Load the `sample_images` folder containing the entire images and the desciptive `.csv` file set into
 
         data/raw
@@ -96,7 +96,7 @@ cd e-commerce
         │   └── validate
         └── raw
             └── sample_images
-            
+
     where `processed/train`, for instance, contains the training images copied from the full set of images.  
 
     The copying routine takes care of empty images and will exclude them from the further considerations.  
@@ -113,9 +113,9 @@ cd e-commerce
 
         utils/utils.py
 
-  Now, everything is ready to run the pretrained models.
+    Now, everything is ready to run the pretrained models.
 
-5. Therefore, simply execute
+5.  Therefore, simply execute
 
       ```
       make model_predict
@@ -123,7 +123,36 @@ cd e-commerce
 
   from the root directory of the project.  
 
-  The
+  This will execute the default pre-trained classifier which is a combination of a deep-learning image classifier and a text classifier.  
+  The image classifier itself is a pre-trained vgg16 model, implemented in keras, along with a customized top to accomplish this particular classification task.  
+
+  The default classification is multilabel.  
+
+  Again, in
+
+        utils/utils.py
+
+  these default settings can be altered.  
+
+  Furthermore, one can also alter two particular default settings by running
+
+      ```
+      make model_predict CLASSMODE==<classmode> MODENAME==<modename>
+      ```
+  where `<classmode>` is  
+
+        a. multilabel (**default**)
+        b. multiclass
+
+  and `<modelmode>`
+
+        a. combined (**default**, run a combined image and text classifier simultaneously)
+        b. image (run only the image classifier)
+        c. text (run only the text classifier)
+
+  Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`
+
+  
 
 
 
