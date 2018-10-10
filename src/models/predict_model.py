@@ -99,12 +99,12 @@ def predict_all(classmode, modelmode, model=None):
 
     print('Evaluate model performance on test set: <model> / <random_guess>')
     if(classmode == 'multilabel'):
-        print('accuracy product_category: {1.2f} / {1.2f}'.format(predictions[4], 1./nclasses[0]))
-        print('accuracy product_type:     {1.2f} / {1.2f}'.format(predictions[5], 1./nclasses[1]))
-        print('accuracy product_details:  {1.2f} / {1.2f}'.format(predictions[6], 1./nclasses[2]))
+        print('accuracy product_category: {0:1.2f} / {1:1.2f}'.format(predictions[4], 1./nclasses[0]))
+        print('accuracy product_type:     {0:1.2f} / {1:1.2f}'.format(predictions[5], 1./nclasses[1]))
+        print('accuracy product_details:  {0:1.2f} / {1:1.2f}'.format(predictions[6], 1./nclasses[2]))
         print('')
     else:
-        print('category:: {1.2f} / {1.2f}'.format(predictions[1], 1./nclasses))
+        print('category:: {0:1.2f} / {1:1.2f}'.format(predictions[1], 1./nclasses))
         print('')
     print(predictions)
 

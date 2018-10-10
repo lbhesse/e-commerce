@@ -18,10 +18,9 @@ import src.data.dataframe as dat
 
 def train(classmode, modelmode, batch_size, epochs, learning_rate):
     train = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.train_df))
-    nclasses = mu.get_n_classes(train, classmode)
+    nclasses = mu.ref_n_classes(classmode)
 
     valid = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.valid_df))
-    mu.get_n_classes(valid, classmode)
 
     traindata = dg.DataSequence(train,
                                 ut.dirs.train_dir,

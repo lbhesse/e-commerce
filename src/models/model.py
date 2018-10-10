@@ -69,7 +69,7 @@ class custom(basic_models):
             self.n_classes_pt = n_classes[1]
             self.n_classes_pd = n_classes[2]
         else:
-            assert (type(n_classes) == np.int64)
+            assert (type(n_classes) != list)
             self.n_classes = n_classes
 
     def make_model(self):

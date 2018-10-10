@@ -13,12 +13,12 @@ import random
 from ast import literal_eval
 
 import src.utils.utils as ut
+import src.utils.model_utils as mu
+import src.data.dataframe as dat
 
 
-def load_image(im):
-    width = ut.params.image_width
-    heigth = ut.params.image_heigth
-    return img_to_array(load_img(im, grayscale=False, target_size=(heigth, width))) / 255.
+
+
 
 
 class DataSequence(Sequence):
@@ -32,12 +32,19 @@ class DataSequence(Sequence):
         self.classmode = classmode
         self.modelmode = modelmode
 
+        self.nref_multilabel = mu.ref_n_classes('multilabel')
+        self.nref_multiclass = mu.ref_n_classes('multiclass')
+
         # Take labels and a list of image locations in memory
         #self.labels = to_categorical(np.array(self.df['category'].values.tolist()))
-        self.labels = to_categorical(np.array(self.df['cat_category'].values.tolist()))#to_categorical(np.array(self.df['category'].values.tolist()))
-        self.labels_pc = to_categorical(np.array(self.df['cat_product_category'].values.tolist()))
-        self.labels_pt = to_categorical(np.array(self.df['cat_product_type'].values.tolist()))
-        self.labels_pd = to_categorical(np.array(self.df['cat_product_details'].values.tolist()))
+        self.labels = to_categorical(np.array(self.df['cat_category'].values.tolist()),
+                                     self.nref_multiclass)
+        self.labels_pc = to_categorical(np.array(self.df['cat_product_category'].values.tolist()),
+                                     self.nref_multilabel[0])
+        self.labels_pt = to_categorical(np.array(self.df['cat_product_type'].values.tolist()),
+                                     self.nref_multilabel[1])
+        self.labels_pd = to_categorical(np.array(self.df['cat_product_details'].values.tolist()),
+                                     self.nref_multilabel[2])
         self.im_list = self.df['imagename'].apply(lambda x: os.path.join(data_path, x)).tolist()
         self.text_list = self.df['tokenized_title'].apply(lambda x: literal_eval(x)).values.tolist()
 
@@ -84,7 +91,7 @@ class DataSequence(Sequence):
         # Fetch a batch of inputs
         idx_min = idx * self.bsz
         idx_max = (idx + 1) * self.bsz
-        return np.array([load_image(im) for im in
+        return np.array([mu.load_image_for_batch(im) for im in
                          self.im_list[idx_min: idx_max]])
 
     def __getitem__(self, idx):

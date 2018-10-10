@@ -7,6 +7,7 @@ from keras.models import load_model
 from keras.preprocessing.image import load_img, img_to_array
 
 import src.utils.utils as ut
+import src.data.dataframe as dat
 
 
 class TrainValTensorBoard(TensorBoard):
@@ -43,6 +44,20 @@ class TrainValTensorBoard(TensorBoard):
         logs = {k: v for k, v in logs.items() if not k.startswith('val_')}
         super(TrainValTensorBoard, self).on_epoch_end(epoch, logs)
 
+def ref_n_classes(classmode):
+    data = dat.read_df(os.path.join(ut.dirs.processed_dir, ut.df_names.cleaned_df))
+    n_classes = len(data['category'].value_counts())
+    n_classes1 = len(data['product_category'].value_counts())
+    n_classes2 = len(data['product_type'].value_counts())
+    n_classes3 = len(data['product_details'].value_counts())
+
+    if(classmode == 'multiclass'):
+        print(type([n_classes, n_classes]))
+        return n_classes
+    else:
+        return [n_classes1, n_classes2, n_classes3]
+
+
 def get_n_classes(data, classmode):
     n_classes = len(data['cat_category'].value_counts())
     n_classes1 = len(data['cat_product_category'].value_counts())
@@ -68,3 +83,9 @@ def load_pretrained_model(classmode, modelmode):
 def load_image(filename, heigth, width):
     img = img_to_array(load_img(filename, grayscale=False, target_size=(heigth, width))) / 255.
     return np.array(img).reshape(1, heigth, width, 3)
+
+
+def load_image_for_batch(im):
+    width = ut.params.image_width
+    heigth = ut.params.image_heigth
+    return img_to_array(load_img(im, grayscale=False, target_size=(heigth, width))) / 255.
