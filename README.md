@@ -166,6 +166,15 @@ with settings as described in the previous section, or change them in `utils/uti
 
 as well as the image dimension can be altered.  
 
+The training can easily be tracked by TensorBoard.  Therefore, after starting the training, open a new terminal window and run
+```
+tensorboard --logdir=<path-to-project>/e-commerce/logs/
+```
+Now, open the browser and run
+```
+http://localhost:6006
+```
+
 # 3. Visual search
 Find images in the data set which are similar to a given image.  
 
