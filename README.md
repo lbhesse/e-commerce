@@ -18,6 +18,8 @@ The remaining data set contains then 9.171 images distributed among 141 categori
 
 ![image of imbalanced data](/reports/figures/cleaned_imbalanced_data.png)
 
+## Labels
+
 Each category can be decomposed into a tripple of subcategories, e.g.
 
     category = product category > product type > product details.
@@ -42,6 +44,85 @@ while the product types among these three product categories are distributed as 
 
 One could now further break down each product type into its product details.  However, to keep it simple, the product detail distributions among each product type is not shown here.  
 
+## Text data
+The text data used for training is the product title of the webshop.  110 items are missing a product title in the original data set.  However, the subset considered during the following is assembled such that each product has a non-empty title.  
+
+The number of words per title vary slightly among the product categories and the corresponding distributions are slightly skewed:
+
+![image of imbalanced data](/reports/figures/title_lengths.png)
+
+We find that the Kunst (art) product category has both the largest median and the largest average of title length, followed by Schmuck (jewlery) and finally Taschen (bags).
+
+However, when filtering out stop words, digits, other obtacles and stemming the words contained in the titles we find a more equalized distribution of title lengths among the product categories:
+
+![image of imbalanced data](/reports/figures/red_title_lengths.png)
+
+These 'cleaned' titles are then used as data for the classifier.  
+
+
+A more detailed investigation of the statistics of the data set can be found in the notebook
+
+    notebooks/dataset_statistics.ipynb
+
+# Hands-on product classification
+
+1. Clone the repository
+```
+git clone git@github.com:L2Data/e-commerce.git
+cd e-commerce
+```
+2. Load the `sample_images` folder containing the entire images and the desciptive `.csv` file set into
+
+        data/raw
+
+3. Load the pre-trained models (if available) into
+
+        models/
+
+4. Create the subset of images with cleaned item titles by running
+```
+make data
+```
+   Next to the original `.csv` a 'cleaned' version of the `.csv` is created.  This 'cleaned' version contains added columns such as a tokenized, e.g., cleaned title of each item, as well as the subcategories described above.  The creation of the 'cleaned' `.csv` is usefull, as the title tokenization takes some time.  When then in the further process a new subset of the entire data set is created the tokenization has not to be done again as the 'cleaned' `.csv` will be used for all further steps once it is created.
+
+   Furthermore, the `data` folder shows now the follwing structure
+
+        .
+        ├── external
+        ├── interim
+        ├── processed
+        │   ├── test
+        │   ├── train
+        │   └── validate
+        └── raw
+            └── sample_images
+    where `processed/train`, for instance, contains the training images copied from the full set of images.  
+
+    The copying routine takes care of empty images and will exclude them from the further considerations.  
+
+    Along with each image set (train, validate, test) comes a descriptive `.csv` as well as a comprehensive one.  
+
+    The creation of the training data can be altered by several options such as
+
+      * train-test-split ratio
+      * subsample ratio
+      * minimum number of items per category      
+
+  All of these parameters carry default values stored in
+
+        utils/utils.py
+
+  Now, everything is ready to run the pretrained models.
+
+5. Therefore, simply execute
+
+      ```
+      make model_predict
+      ```
+
+  from the root directory of the project.  
+
+  The
 
 
 
