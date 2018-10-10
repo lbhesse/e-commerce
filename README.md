@@ -121,10 +121,10 @@ A more detailed investigation of the statistics of the data set can be found in 
       ```
     from the root directory of the project.  
 
-    This will execute the default pre-trained classifier which is a combination of a deep-learning image classifier and a text classifier.  
-    The image classifier itself is a pre-trained vgg16 model, implemented in keras, along with a customized top to accomplish this particular classification task.  
+    This will execute the **default** pre-trained classifier which is a **combination of a deep-learning image classifier and a text classifier**.  
+    The image classifier itself is a pre-trained vgg16 model, implemented in keras, along with a customized top to accomplish this particular classification task.  Using a pre-trained model for the image classifier is a good choice for various reasons such as the imbalance of the data set.  With the pre-trained model the feature extraction is accomplished a lot faster and easier than by training from scratch.  
 
-    The default classification is multilabel.  
+    The **default** classification is **multilabel**.  
 
     Again, in
 
@@ -134,7 +134,7 @@ A more detailed investigation of the statistics of the data set can be found in 
 
     Furthermore, one can also alter two particular default settings by running
     ```
-    make model_predict CLASSMODE==<classmode> MODENAME==<modename>
+    make model_predict CLASSMODE=<classmode> MODENAME=<modename>
     ```
     where `<classmode>` is  
 
@@ -154,17 +154,40 @@ Therefore, simply execute
   ```
   make model_train
   ```
-from the root directory of the project.  
+from the root directory of the project.  Make sure that it has been accounted for step 2. - 4. of the previous section such that the pre-trained model as well as the data is ready.   
 
 If `<classmode>` and/or `<modelmode>` should be altered, either run
 ```
-make model_train CLASSMODE==<classmode> MODENAME==<modename>
+make model_train CLASSMODE=<classmode> MODENAME=<modename>
 ```
 with settings as described in the previous section, or change them in `utils/utils.py`.  There also the hyperparameters such as
   * batch batch
   * learning rate
 
-as well as the image dimensions can be altered.  
+as well as the image dimension can be altered.  
+
+# 3. Visual search
+Find images in the data set which are similar to a given image.  
+
+This task can be accomplished by a two-fold approach:
+
+1. Extract the features of the images from the pre-trained model.  This yields a feature vector of floats for every image.  These feature vectors are stored in `models/extracted_features.npz`
+
+  To extract your own features, execute
+  ```
+  make model_extract_features
+  ```
+
+  Make sure that the pre-trained image classifier is already in the  `models` directory
+  
+2. Run a simple classifier (here kNN with k=5) to find the 5 feature vector with the smallest distance to the given image.  
+
+  To run the visual search, use the notebook
+
+        notebooks/visual_search.ipynb
+
+
+
 
 
 Project Organization
