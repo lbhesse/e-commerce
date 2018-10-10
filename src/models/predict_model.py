@@ -118,13 +118,7 @@ def predict_all(classmode, modelmode, model=None):
                             image, text, combined\n\
                             (default: combined)')
 def main(classmode, modelmode):
-    if(len(classmode)==0):
-        classmode = ut.params.classmode
-        print('No classmode chosen.  Set to default:', classmode)
-    if(len(modelmode)==0):
-        modelmode = ut.params.modelmode
-        print('No modelmode chosen.  Set to defualt:', modelmode)
-
+    classmode, modelmode = ut.check_modes(classmode, modelmode)
     model = mu.load_pretrained_model(classmode, modelmode)
     predict_all(classmode, modelmode, model)
 

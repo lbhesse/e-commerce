@@ -80,12 +80,7 @@ def train(classmode, modelmode, batch_size, epochs, learning_rate):
                     help='batch size (default: {})'.
                     format(ut.params.batch_size))
 def main(classmode, modelmode, bs, ep, lr):
-    if(len(classmode)==0):
-        classmode = ut.params.classmode
-        print('No classmode chosen.  Set to default:', classmode)
-    if(len(modelmode)==0):
-        modelmode = ut.params.modelmode
-        print('No modelmode chosen.  Set to defualt:', modelmode)
+    classmode, modelmode = ut.check_modes(classmode, modelmode)
 
     train(classmode, modelmode, bs, ep, lr)
 

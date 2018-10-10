@@ -1,10 +1,35 @@
 import os
+import sys
 
 import settings
 
 global rootdir
 rootdir = settings.PROJECT_ROOT
 
+def check_modes(classmode, modelmode):
+    cm = None
+    mm = None
+    if(len(classmode) == 0):
+        cm = params.classmode
+        print('No classmode chosen.  Set to default:', classmode)
+    elif(classmode not in ['multilabel', 'multiclass']):
+            print('choose from available classmodes:')
+            print('   multiclass, multilabel')
+            sys.exit()
+    else:
+        print('********************', classmode)
+        cm = classmode
+
+    if(len(modelmode) == 0):
+        mm = params.modelmode
+        print('No modelmode chosen.  Set to default:', modelmode)
+    elif(modelmode not in ['combined', 'image', 'text']):
+        print('chose from available modelmodes:')
+        print('   combined, image, text')
+        sys.exit()
+    else:
+        mm = modelmode
+    return cm, mm
 
 class dirs:
     base_dir = os.path.join(rootdir, "data")
