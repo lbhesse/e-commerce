@@ -135,10 +135,9 @@ A more detailed investigation of the statistics of the data set can be found in 
   these default settings can be altered.  
 
   Furthermore, one can also alter two particular default settings by running
-
-      ```
-      make model_predict CLASSMODE==<classmode> MODENAME==<modename>
-      ```
+  ```
+  make model_predict CLASSMODE==<classmode> MODENAME==<modename>
+  ```
   where `<classmode>` is  
 
         a. multilabel (**default**)
@@ -152,7 +151,7 @@ A more detailed investigation of the statistics of the data set can be found in 
 
   Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`
 
-  
+
 
 
 
