@@ -4,8 +4,7 @@ import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 
-from keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
-
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 import src.utils.utils as ut
 import src.utils.model_utils as mu
@@ -13,7 +12,6 @@ import src.models.model as md
 import src.models.data_generator as dg
 
 import src.data.dataframe as dat
-
 
 
 def train(classmode, modelmode, batch_size, epochs, learning_rate):
@@ -82,7 +80,6 @@ def train(classmode, modelmode, batch_size, epochs, learning_rate):
                     help='batch size (default: {})'.
                     format(ut.params.batch_size))
 def main(classmode, modelmode, bs, ep, lr):
-    print('************* classmode', len(classmode))
     if(len(classmode)==0):
         classmode = ut.params.classmode
         print('No classmode chosen.  Set to default:', classmode)
@@ -97,11 +94,8 @@ if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # not used in this stub but often useful for finding various files
     project_dir = Path(__file__).resolve().parents[2]
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
     main()

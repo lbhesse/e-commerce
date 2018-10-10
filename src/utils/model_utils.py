@@ -52,7 +52,6 @@ def ref_n_classes(classmode):
     n_classes3 = len(data['product_details'].value_counts())
 
     if(classmode == 'multiclass'):
-        print(type([n_classes, n_classes]))
         return n_classes
     else:
         return [n_classes1, n_classes2, n_classes3]
