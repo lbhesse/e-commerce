@@ -1,7 +1,17 @@
 e-commerce
 ==============================
 
-Classifying products based on images and text.
+This deep learning demo project classifies products into different categories based on image and text data.  
+
+The entire data set contains 99.943 images and is imbalanced among the classes.  To abbreviate the training time the data set was restricted as follows:
+* only 10 % of the images
+* only classes with at least 10 items
+
+![image of imbalanced data](https://github.com/L2Data/e-commerce/tree/master/reports/figures/imbalanced_data.png)
+
+
+
+
 
 Project Organization
 ------------
