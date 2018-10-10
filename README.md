@@ -64,7 +64,7 @@ A more detailed investigation of the statistics of the data set can be found in 
 
     notebooks/dataset_statistics.ipynb
 
-# Hands-on product classification
+# 1. Out of the box product classification
 
 1. Clone the repository
     ```
@@ -147,10 +147,24 @@ A more detailed investigation of the statistics of the data set can be found in 
           b. image (run only the image classifier)
           c. text (run only the text classifier)
 
-    Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`
+    Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`.
 
+# 2. Training a model
+Therefore, simply execute
+  ```
+  make model_train
+  ```
+from the root directory of the project.  
 
+If `<classmode>` and/or `<modelmode>` should be altered, either run
+```
+make model_train CLASSMODE==<classmode> MODENAME==<modename>
+```
+with settings as described in the previous section, or change them in `utils/utils.py`.  There also the hyperparameters such as
+  * batch batch
+  * learning rate
 
+as well as the image dimensions can be altered.  
 
 
 Project Organization
