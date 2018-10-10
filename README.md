@@ -177,16 +177,18 @@ This task can be accomplished by a two-fold approach:
   ```
   make model_extract_features
   ```
+  Make sure that the pre-trained image classifier is already in the  `models` directory.
 
-  Make sure that the pre-trained image classifier is already in the  `models` directory
-  
 2. Run a simple classifier (here kNN with k=5) to find the 5 feature vector with the smallest distance to the given image.  
 
   To run the visual search, use the notebook
 
         notebooks/visual_search.ipynb
 
-
+To get an impression of the functionality of this approach:
+![image of imbalanced data](/reports/figures/image_search_Kunst.png)
+![image of imbalanced data](/reports/figures/image_search_Taschen.png)
+![image of imbalanced data](/reports/figures/image_search_Schmuck.png)
 
 
 
