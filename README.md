@@ -80,9 +80,9 @@ cd e-commerce
         models/
 
 4. Create the subset of images with cleaned item titles by running
-```
-make data
-```
+    ```
+    make data
+    ```
    Next to the original `.csv` a 'cleaned' version of the `.csv` is created.  This 'cleaned' version contains added columns such as a tokenized, e.g., cleaned title of each item, as well as the subcategories described above.  The creation of the 'cleaned' `.csv` is usefull, as the title tokenization takes some time.  When then in the further process a new subset of the entire data set is created the tokenization has not to be done again as the 'cleaned' `.csv` will be used for all further steps once it is created.
 
    Furthermore, the `data` folder shows now the follwing structure
@@ -96,6 +96,7 @@ make data
         │   └── validate
         └── raw
             └── sample_images
+            
     where `processed/train`, for instance, contains the training images copied from the full set of images.  
 
     The copying routine takes care of empty images and will exclude them from the further considerations.  
@@ -108,7 +109,7 @@ make data
       * subsample ratio
       * minimum number of items per category      
 
-  All of these parameters carry default values stored in
+    All of these parameters carry default values stored in
 
         utils/utils.py
 
