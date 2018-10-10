@@ -1,14 +1,46 @@
 e-commerce
 ==============================
 
-This deep learning demo project classifies products into different categories based on image and text data.  
+This deep learning demo project accomplishes the task of product classification into different categories based on image and text data.  The categories serve as labels for the supervised learning approach.
 
-The entire data set contains 99.943 images and is imbalanced among the classes.  To abbreviate the training time the data set was restricted as follows:
+
+The entire data set contains 99.943 images of shop items belonging to 365 different categories.  The data set is imbalanced among these categories:
+
+![image of imbalanced data](/reports/figures/imbalanced_data.png)
+
+To abbreviate the training time the data set is restricted as follows:
 * only 10 % of the images
-* only classes with at least 10 items
+* only categories with at least 10 items
 
-![image of imbalanced data](https://github.com/L2Data/e-commerce/tree/master/reports/figures/imbalanced_data.png)
+This abbreviated approach does not capture the whole complexity of the task but provides a first proof of concept.
 
+The remaining data set contains then 9.171 images distributed among 141 categories and still sketches the class imbalance in a decent way:
+
+![image of imbalanced data](/reports/figures/cleaned_imbalanced_data.png)
+
+Each category can be decomposed into a tripple of subcategories, e.g.
+
+    category = product category > product type > product details.
+
+With this, one can choose between
+
+1. multiclass classification based on the item's
+
+        category
+
+2. multilabel (and still mutliclass) classification based on the category decomposition into
+
+        product category, product type, product details
+
+The product category contains three classes distributed as
+
+![image of imbalanced data](/reports/figures/product_categories.png)
+
+while the product types among these three product categories are distributed as follows
+
+![image of imbalanced data](/reports/figures/product_types.png)
+
+One could now further break down each product type into its product details.  However, to keep it simple, the product detail distributions among each product type is not shown here.  
 
 
 
