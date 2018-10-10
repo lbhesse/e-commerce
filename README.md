@@ -134,7 +134,7 @@ A more detailed investigation of the statistics of the data set can be found in 
 
     Furthermore, one can also alter two particular default settings by running
     ```
-    make model_predict CLASSMODE=<classmode> MODENAME=<modename>
+    make model_predict CLASSMODE=<classmode> MODELMODE=<modelmode>
     ```
     where `<classmode>` is  
 
@@ -158,11 +158,12 @@ from the root directory of the project.  Make sure that it has been accounted fo
 
 If `<classmode>` and/or `<modelmode>` should be altered, either run
 ```
-make model_train CLASSMODE=<classmode> MODENAME=<modename>
+make model_train CLASSMODE=<classmode> MODELMODE=<modelmode>
 ```
 with settings as described in the previous section, or change them in `utils/utils.py`.  There also the hyperparameters such as
   * batch batch
   * learning rate
+  * epochs
 
 as well as the image dimension can be altered.  
 

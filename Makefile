@@ -31,10 +31,20 @@ data: requirements
 
 CLASSMODE = ''
 MODELMODE = ''
-## Make train
-train: requirements
+## Make model_train
+model_train: requirements
 	rm -rf logs/
 	$(PYTHON_INTERPRETER) src/models/train_model.py --classmode $(CLASSMODE) --modelmode $(MODELMODE)
+
+	## Make model_predict
+model_predict: requirements
+		rm -rf logs/
+		$(PYTHON_INTERPRETER) src/models/predict_model.py --classmode $(CLASSMODE) --modelmode $(MODELMODE)
+
+		## Make model_extract_features
+model_extract_features: requirements
+			rm -rf logs/
+			$(PYTHON_INTERPRETER) src/features/build_features.py --classmode $(CLASSMODE) --modelmode $(MODELMODE)
 
 
 ## Delete all compiled Python files
