@@ -106,7 +106,7 @@ def predict_all(classmode, modelmode, model=None):
     else:
         print('category:: {0:1.2f} / {1:1.2f}'.format(predictions[1], 1./nclasses))
         print('')
-    print(predictions)
+
 
 @click.command()
 @click.option('--classmode', type=str, default=ut.params.classmode,

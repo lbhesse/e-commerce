@@ -149,6 +149,32 @@ A more detailed investigation of the statistics of the data set can be found in 
 
     Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`.
 
+
+After training the **default** classifier for only 10 epochs on a NVIDIA® Tesla® V100, the model already achived the following accuracies
+```
+Evaluate model performance on test set: <model> / <random_guess>
+accuracy product_category: 0.88 / 0.33
+accuracy product_type:     0.65 / 0.03
+accuracy product_details:  0.42 / 0.01
+
+average:                   0.65 / 0.12
+```
+Surprisingly, the text classifier in multilabel mode and trained on a CPU (Intel® Core™ i7-6500U CPU @ 2.50GHz × 4) performed also quite well  
+```
+Evaluate model performance on test set: <model> / <random_guess>
+accuracy product_category: 0.90 / 0.33
+accuracy product_type:     0.60 / 0.03
+accuracy product_details:  0.32 / 0.01
+
+average:                   0.61 / 0.12
+```
+
+However, in multiclass mode:
+```
+Evaluate model performance on test set: <model> / <random_guess>
+category:: 0.29 / 0.01
+```
+
 # 2. Training a model
 Therefore, simply execute
   ```
