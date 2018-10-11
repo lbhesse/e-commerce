@@ -150,7 +150,7 @@ A more detailed investigation of the statistics of the data set can be found in 
     Before altering these default settings make sure that there is the corresponding pre-trained model available in `<models>`.
 
 
-After training the **default** classifier for only 10 epochs on a NVIDIA® Tesla® V100, the model already achived the following accuracies
+With the **default** classifier trained for only 10 epochs on a NVIDIA® Tesla® V100, the model already achieves
 ```
 Evaluate model performance on test set: <model> / <random_guess>
 accuracy product_category: 0.88 / 0.33
