@@ -187,7 +187,7 @@ If `<classmode>` and/or `<modelmode>` should be altered, either run
 make model_train CLASSMODE=<classmode> MODELMODE=<modelmode>
 ```
 with settings as described in the previous section, or change them in `utils/utils.py`.  There also the hyperparameters such as
-  * batch batch
+  * batch size
   * learning rate
   * epochs
 
