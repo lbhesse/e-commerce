@@ -181,19 +181,19 @@ Find images in the data set which are similar to a given image.
 
 This task can be accomplished by a two-fold approach:
 
-1. Extract the features of the images from the pre-trained model.  This yields a feature vector of floats for every image.  These feature vectors are stored in `models/extracted_features.npz`
+1.  Extract the features of the images from the pre-trained model.  This yields a feature vector of floats for every image.  These feature vectors are stored in `models/extracted_features.npz`
 
-  To extract your own features, execute
-  ```
-  make model_extract_features
-  ```
-  Make sure that the pre-trained image classifier is already in the  `models` directory.
+    To extract your own features, execute
+    ```
+    make model_extract_features
+    ```
+    Make sure that the pre-trained image classifier is already in the  `models` directory.
 
-2. Run a simple classifier (here kNN with k=5) to find the 5 feature vector with the smallest distance to the given image.  
+2.  Run a simple classifier (here kNN with k=5) to find the 5 feature vector with the smallest distance to the given image.  
 
-  To run the visual search, use the notebook
+    To run the visual search, use the notebook
 
-        notebooks/visual_search.ipynb
+          notebooks/visual_search.ipynb
 
 To get an impression of the functionality of this approach:
 ![image of imbalanced data](/reports/figures/image_search_Kunst.png)
