@@ -172,7 +172,7 @@ average:                   0.61 / 0.12
 However, in multiclass mode:
 ```
 Evaluate model performance on test set: <model> / <random_guess>
-category:: 0.29 / 0.01
+category: 0.29 / 0.01
 ```
 
 # 2. Training a model
